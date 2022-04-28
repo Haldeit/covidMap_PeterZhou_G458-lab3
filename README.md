@@ -7,3 +7,5 @@
 ![](./img/map1.png)
 ### The second thematic map is a choropleth map. This map fills the county polygon with color based on the intensity. The intensity is defined as rate, or the number of cases per 1000 residents. This compares the number of cases in respect to the population. For example, Los Angles may have the highest total number of cases, in respect to its population however it is not near the highest, which is in Colorado.
 ![](./img/map2.png)
+
+### Both
