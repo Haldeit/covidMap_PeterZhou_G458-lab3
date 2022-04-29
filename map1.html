@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Rates in US</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* the layout of the legend panel */
+        #legend {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            background: rgb(215, 242, 204);
+            margin-right: 20px;
+            margin-bottom: 40px;
+            padding: 10px 30px 10px 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* title and subtitle*/
+        #title {
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin-top: 20px;
+            margin-left: 20px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 25pt;
+            color: rgb(255, 255, 255);
+            background-color: rgb(76, 82, 78);
+            border-radius: 150px;
+            width: 520px;
+        }
+
+        #subtitle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin-top: 30px;
+            margin-left: 420px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15pt;
+            color: rgb(255, 255, 255);
+            background-color: rgb(76, 82, 78);
+            border-radius: 130px;
+        }
+
+        /* each line for a break */
+        .break {
+            position: relative;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        /* basic style for a dot/circle */
+        .dot {
+            display: inline-block;
+            margin-top: 5px;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        /* the label for the dot */
+        .dot-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-style: italic;
+        }
+
+        /* the text color of a hyper link */
+        a {
+            color: black
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="legend"></div>
+    <div id="title">
+        Covid Case Rates in US
+    </div>
+    <div id="subtitle">
+        Year 2020
+    </div>
+    <script>
+        mapboxgl.accessToken =
+            'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
+        let map = new mapboxgl.Map({
+            container: 'map', // container ID
+            style: 'mapbox://styles/mapbox/navigation-night-v1',
+            zoom: 4, // starting zoom
+            center: [-100, 40], // starting center, United States
+            projection: 'albers'
+        });
+
+        const case_rate = [10, 40, 90, 130, 170, 210, 250],
+            colors = [  'rgb(204,255,255)', 'rgb(103,169,207)', 'rgb(1,108,89)',
+                        'rgb(255,255,51)', 'rgb(255,128,0)', 'rgb(255,102,102)', 
+                        'rgb(255,51,255)'];
+            // radii = [0.5, 2, 6, 10, 12, 20, 36];
+
+        //load data to the map as new layers.
+        //map.on('load', function loadingData() {
+        map.on('load', () => { //simplifying the function statement: arrow with brackets to define a function
+
+            // when loading a geojson, there are two steps
+            // add a source of the data and then add the layer out of the source
+            map.addSource('rates_map', {
+                type: 'geojson',
+                data: 'assets/ratesJson.geojson'
+            });
+
+            map.addLayer({
+                    'id': 'rates_layer',
+                    'type': 'fill',
+                    'source': 'rates_map',
+                    'paint': {
+                        /*
+                        // increase the radii of the circle as the zoom level and dbh value increases
+                        'circle-radius': {
+                            'property': 'cases',
+                            'stops': [
+                                [{
+                                    zoom: 5,
+                                    value: case_num[0]
+                                }, radii[0]],
+                                [{
+                                    zoom: 5,
+                                    value: case_num[1]
+                                }, radii[1]],
+                                [{
+                                    zoom: 5,
+                                    value: case_num[2]
+                                }, radii[2]],
+                                [{
+                                    zoom: 5,
+                                    value: case_num[3]
+                                }, radii[3]],
+                                [{
+                                    zoom: 5,
+                                    value: case_num[4]
+                                }, radii[4]],
+                                [{
+                                    zoom: 5,
+                                    value: case_num[5]
+                                }, radii[5]],
+                                [{
+                                    zoom: 5,
+                                    value: case_num[6]
+                                }, radii[6]]
+                            ]
+                        },
+                        
+                        'circle-color': {
+                            'property': 'cases',
+                            'stops': [
+                                [case_num[0], colors[0]],
+                                [case_num[1], colors[1]],
+                                [case_num[2], colors[2]],
+                                [case_num[3], colors[3]],
+                                [case_num[4], colors[4]],
+                                [case_num[5], colors[5]],
+                                [case_num[6], colors[6]],
+                            ]
+                        },
+                        'circle-stroke-color': 'white',
+                        'circle-stroke-width': 1,
+                        'circle-opacity': 0.6
+                        */
+                       'fill-color': {
+                            'property': 'rates',
+                            'stops': [
+                                [case_rate[0], colors[0]],
+                                [case_rate[1], colors[1]],
+                                [case_rate[2], colors[2]],
+                                [case_rate[3], colors[3]],
+                                [case_rate[4], colors[4]],
+                                [case_rate[5], colors[5]],
+                                [case_rate[6], colors[6]],
+                            ]
+                        }
+                       
+                    }
+                },
+                'waterway-label'
+            );
+
+
+            // click on tree to view state, county, case# in a popup in separate lines
+            map.on('click', 'rates_layer', (event) => {
+                new mapboxgl.Popup()
+                    .setLngLat(event.lngLat)
+                    .setHTML(`  <strong>State:</strong> ${event.features[0].properties.state} <br>
+                                <strong>County:</strong> ${event.features[0].properties.county} <br>
+                                <strong>Rate:</strong> ${event.features[0].properties.rates}cases per 1000 residents`)
+                    .addTo(map);
+            });
+
+        });
+
+
+        // create legend
+        const legend = document.getElementById('legend');
+
+        //set up legend grades and labels
+        var labels = ['<strong>Cases per 1000 residents</strong>'], vbreak;
+        //iterate through case_rate and create a scaled circle and label for each
+        for (var i = 0; i < case_rate.length; i++) {
+            vbreak = case_rate[i];
+            // you need to manually adjust the radius of each dot on the legend 
+            // in order to make sure the legend can be properly referred to the dot on the map.
+            labels.push(
+                '<p class="break"><i class="dot" style="background:' + colors[i] + '; width: 25px;  height: 25px; "></i> <span class="dot-label" >' + vbreak +
+                '</span></p>');
+
+        }
+        // add the data source
+        const source =
+            '<p style="text-align: right; font-size:10pt">Source: NYTimes </p>';
+        // combine all the html codes.
+        legend.innerHTML = labels.join('') + source;
+    </script>
+
+</body>
+
+</html>
